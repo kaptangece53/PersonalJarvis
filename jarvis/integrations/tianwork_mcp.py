@@ -97,6 +97,20 @@ async def tianwork_health() -> dict[str, Any]:
 
 
 @mcp.tool()
+async def tianwork_activity_events(days: int = 30, limit: int = 500) -> dict[str, Any]:
+    """Read privacy-safe raw TianWork activity events.
+
+    Use this when reviewed work context is empty but the user wants to inspect
+    collected activity. Returns timestamp, source, event type, application,
+    window title and resource only; raw MetadataJson is intentionally excluded.
+    Days is clamped to 1-3650 and limit to 1-1000.
+    """
+    bounded_days = max(1, min(int(days), 3650))
+    bounded_limit = max(1, min(int(limit), 1000))
+    return await _invoke_cli("activity-events", str(bounded_days), str(bounded_limit))
+
+
+@mcp.tool()
 async def tianwork_work_context(days: int = 7) -> dict[str, Any]:
     """Read reviewed TianWork work context for the last 1-90 days.
 
